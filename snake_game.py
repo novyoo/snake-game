@@ -6,12 +6,23 @@ import random
 
 delay = 0.13
 
+#scoree
+score = 0
+high_score = 0
+try:
+    with open("highscore.txt", "r") as file:
+        high_score = int(file.read())
+except:
+    high_score = 0
+
 # Setting up the screen / the window that pops up
 screen = turtle.Screen()
 screen.title("S N A K E  G A M E")
 screen.bgpic("bg.gif")
 screen.setup(width = 620, height = 620)
 screen.tracer(0) #turns off animations on screen
+
+screen.cv._rootwindow.resizable(False, False)
 
 # Register your PNG image
 screen.addshape("bg.gif")
@@ -31,6 +42,16 @@ head.goto(0,0)
 head.direction = "stop"
 
 segments = []
+
+# Scores
+pen = turtle.Turtle()
+pen.speed(0)
+pen.shape("square")
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(-290, 230)
+pen.write("High score: 0\nScore: 0", align = "left", font = ("Pixelify Sans", 24, "normal"))
 
 # Food
 food = turtle.Turtle()
@@ -109,6 +130,17 @@ while True:
 
         segments.clear()
 
+        #Reset score
+        score = 0
+
+        # Reset the delay
+        delay = 0.13
+        
+        pen.clear()
+        pen.write("High score: {}\nScore: {}".format(high_score, score), align = "left", font = ("Pixelify Sans", 24, "normal"))
+
+
+    #collisiion w food
     if head.distance(food) < 30:
         
         # Move food to random spot
@@ -122,6 +154,20 @@ while True:
         new_segment.shape("snake_body.gif")
         new_segment.penup()
         segments.append(new_segment)
+
+        #shorten delay
+        delay -=0.001
+
+        #Increasing the score
+        score += 1
+
+        if score > high_score:
+            high_score = score
+            with open("highscore.txt", "w") as file:
+                file.write(str(high_score))
+
+        pen.clear()
+        pen.write("High score: {}\nScore: {}".format(high_score, score), align = "left", font = ("Pixelify Sans", 24, "normal"))
     
     # Movinf the parts
     for index in range(len(segments)-1, 0, -1):
@@ -148,9 +194,15 @@ while True:
                 segment.goto(1000, 1000)
             segments.clear()
 
+            #Reset score
+            score = 0
+
+            # Reset the delay
+            delay = 0.13
+
+            pen.clear()
+            pen.write("High score: {}\nScore: {}".format(high_score, score), align = "left", font = ("Pixelify Sans", 24, "normal"))
+
     time.sleep(delay)
-
-
-
 
 screen.mainloop()
